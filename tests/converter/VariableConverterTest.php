@@ -11,14 +11,12 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
-use sankar\ST\Converter\VariableConverter;
+use toTwig\Converter\VariableConverter;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
  */
-class CommentconverterTest extends \PHPUnit_Framework_TestCase
+class VariableConverterTest extends \PHPUnit_Framework_TestCase
 {
     protected $converter;
 
@@ -27,7 +25,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
         $this->converter = new VariableConverter();
     }
     /**
-     * @covers sankar\ST\Converter\VariableConverter::convert
+     * @covers \toTwig\Converter\VariableConverter::convert
      * @dataProvider Provider
      */
     public function testThatVariableIsConverted($smarty,$twig)
@@ -60,7 +58,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\Variableconverter::getName
+     * @covers \toTwig\Converter\VariableConverter::getName
      */
     public function testThatHaveExpectedName()
     {
@@ -68,7 +66,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\Variableconverter::getDescription
+     * @covers \toTwig\Converter\VariableConverter::getDescription
      */
     public function testThatHaveDescription()
     {

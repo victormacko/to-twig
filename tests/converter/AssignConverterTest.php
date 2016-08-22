@@ -11,9 +11,7 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
-use sankar\ST\Converter\AssignConverter;
+use toTwig\Converter\AssignConverter;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
@@ -27,7 +25,7 @@ class AssignConverterTest extends \PHPUnit_Framework_TestCase
         $this->converter = new AssignConverter();
     }
     /**
-     * @covers sankar\ST\Converter\AssignConverter::convert
+     * @covers \toTwig\Converter\AssignConverter::convert
      * @dataProvider Provider
      */
     public function testThatAssignIsConverted($smarty,$twig)
@@ -63,7 +61,7 @@ class AssignConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\AssignConverter::getName
+     * @covers \toTwig\Converter\AssignConverter::getName
      */
     public function testThatHaveExpectedName()
     {
@@ -71,7 +69,7 @@ class AssignConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\AssignConverter::getDescription
+     * @covers \toTwig\Converter\AssignConverter::getDescription
      */
     public function testThatHaveDescription()
     {

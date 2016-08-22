@@ -27,7 +27,7 @@ class ForConverterTest extends \PHPUnit_Framework_TestCase
         $this->converter = new ForConverter();
     }
     /**
-     * @covers sankar\ST\Converter\ForConverter::convert
+     * @covers \toTwig\Converter\ForConverter::convert
      * @dataProvider Provider
      */
     public function testThatForIsConverted($smarty,$twig)
@@ -63,7 +63,7 @@ class ForConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\ForConverter::getName
+     * @covers \toTwig\Converter\ForConverter::getName
      */
     public function testThatHaveExpectedName()
     {
@@ -71,7 +71,7 @@ class ForConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\ForConverter::getDescription
+     * @covers \toTwig\Converter\ForConverter::getDescription
      */
     public function testThatHaveDescription()
     {

@@ -11,14 +11,13 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
-use sankar\ST\Converter\MiscConverter;
+use Symfony\Component\Finder\SplFileInfo;
+use toTwig\Converter\MiscConverter;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
  */
-class CommentconverterTest extends \PHPUnit_Framework_TestCase
+class MiscConverterTest extends \PHPUnit_Framework_TestCase
 {
     protected $converter;
 
@@ -27,7 +26,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
         $this->converter = new MiscConverter();
     }
     /**
-     * @covers sankar\ST\Converter\MiscConverter::convert
+     * @covers \toTwig\Converter\MiscConverter::convert
      * @dataProvider Provider
      */
     public function testThatMiscIsConverted($smarty,$twig)
@@ -57,7 +56,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\Miscconverter::getName
+     * @covers \toTwig\Converter\MiscConverter::getName
      */
     public function testThatHaveExpectedName()
     {
@@ -65,7 +64,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\Miscconverter::getDescription
+     * @covers \toTwig\Converter\MiscConverter::getDescription
      */
     public function testThatHaveDescription()
     {
@@ -74,7 +73,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
 
     private function getFileMock()
     {
-        return $this->getMockBuilder('\SplFileInfo')
+        return $this->getMockBuilder(SplFileInfo::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

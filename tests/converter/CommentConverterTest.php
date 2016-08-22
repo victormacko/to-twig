@@ -27,7 +27,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
         $this->converter = new CommentConverter();
     }
     /**
-     * @covers sankar\ST\Converter\CommentConverter::convert
+     * @covers \toTwig\Converter\CommentConverter::convert
      * @dataProvider Provider
      */
     public function testThatIfIsConverted($smarty,$twig)
@@ -51,7 +51,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\Commentconverter::getName
+     * @covers \toTwig\Converter\CommentConverter::getName
      */
     public function testThatHaveExpectedName()
     {
@@ -59,7 +59,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\Commentconverter::getDescription
+     * @covers \toTwig\Converter\CommentConverter::getDescription
      */
     public function testThatHaveDescription()
     {

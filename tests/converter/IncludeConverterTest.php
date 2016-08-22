@@ -11,9 +11,8 @@
 
 namespace sankar\ST\Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
-use sankar\ST\Converter\IncludeConverter;
+use Symfony\Component\Finder\SplFileInfo;
+use toTwig\Converter\IncludeConverter;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
@@ -27,7 +26,7 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
         $this->converter = new IncludeConverter();
     }
     /**
-     * @covers sankar\ST\Converter\IncludeConverter::convert
+     * @covers \toTwig\Converter\IncludeConverter::convert
      * @dataProvider Provider
      */
     public function testThatIncludeIsConverted($smarty,$twig)
@@ -44,7 +43,7 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
     {
         return array(
                 array( 
-                        "{include file='page_header.tpl'}"
+                        "{include file='page_header.tpl'}",
                         "{% include 'page_header.tpl' %}"
                     ),
                 array(
@@ -55,7 +54,7 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\IncludeConverter::getName
+     * @covers \toTwig\Converter\IncludeConverter::getName
      */
     public function testThatHaveExpectedName()
     {
@@ -63,7 +62,7 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers sankar\ST\Converter\IncludeConverter::getDescription
+     * @covers \toTwig\Converter\IncludeConverter::getDescription
      */
     public function testThatHaveDescription()
     {
@@ -72,7 +71,7 @@ class IncludeConverterTest extends \PHPUnit_Framework_TestCase
 
     private function getFileMock()
     {
-        return $this->getMockBuilder('\SplFileInfo')
+        return $this->getMockBuilder(SplFileInfo::class)
             ->disableOriginalConstructor()
             ->getMock();
     }
