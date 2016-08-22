@@ -19,23 +19,34 @@ use toTwig\ConverterAbstract;
 class AssignConverter extends ConverterAbstract
 {
 
-	public function convert(\SplFileInfo $file, $content)
+    public function convert(\SplFileInfo $file, $content)
 	{
 		$content = $this->replace($content);
 
 		return $content;
 	}
-
+    /**
+     * @codeCoverageIgnore
+     * @inheritdoc
+     */
 	public function getPriority()
 	{
 		return 100;
 	}
 
+    /**
+     * @codeCoverageIgnore
+     * @inheritdoc
+     */
 	public function getName()
 	{
 		return 'assign';
 	}
 
+    /**
+     * @codeCoverageIgnore
+     * @inheritdoc
+     */
 	public function getDescription()
 	{
 		return "Convert smarty {assign} to twig {% set foo = 'foo' %}";
@@ -51,19 +62,20 @@ class AssignConverter extends ConverterAbstract
 	        $match   = $matches[1];
 	        $attr    = $this->attributes($match);
 
-	        $key   = $attr['var'];
-	        $value = $attr['value'];
-
 	        // Short-hand {assign "name" "Bob"}
-	        if (!isset($key)) {
+	        if (!isset($attr['var'])) {
 	            reset($attr);
 	            $key = key($attr);
-	        }
+	        } else {
+	            $key = $attr['var'];
+            }
 
-	        if (!isset($value)) {
+	        if (!isset($attr['value'])) {
 	            next($attr);
 	            $value = key($attr);
-	        }
+	        } else {
+                $value = $attr['value'];
+            }
 
 	        $value = $this->value($value);
 	        $key   = $this->variable($key);
@@ -74,7 +86,7 @@ class AssignConverter extends ConverterAbstract
 	               
 	        return str_replace($matches[0], $string, $matches[0]);
 
-	      },$content);
+	      }, $content);
 
 	}
 
