@@ -43,14 +43,14 @@ class VariableConverter extends ConverterAbstract
 
 	private function replace($content)
 	{
-		$pattern = '/\{\$([\w\.\-\>\[\]]+)\}/';
+		$pattern = '/\{\$([\w\.\-\>\[\]]+)\(?\)?\}/';
 		return preg_replace_callback($pattern, function($matches) {
 
 	        $match   = $matches[1];
 	        $search  = $matches[0];
 
 	        // Convert Object to dot
-	        $match = str_replace('->', '.', $match);
+	        $match = str_replace(['->', '()'], ['.', ''], $match);
 
 	        $search  = str_replace($search, '{{ '.$match.' }}', $search);
 

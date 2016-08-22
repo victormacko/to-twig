@@ -19,43 +19,57 @@ use toTwig\FrameworkTestCase;
  */
 class VariableConverterTest extends FrameworkTestCase
 {
+    /**
+     * @var VariableConverter
+     */
     protected $converter;
 
     public function setUp()
     {
         $this->converter = new VariableConverter();
     }
+
     /**
-     * @covers \toTwig\Converter\VariableConverter::convert
+     * @covers       \toTwig\Converter\VariableConverter::convert
      * @dataProvider provider
      */
-    public function testThatVariableIsConverted($smarty,$twig)
+    public function testThatVariableIsConverted($smarty, $twig)
     {
-        $this->assertSame($twig,
+        $this->assertSame(
+            $twig,
             $this->converter->convert($this->getFileMock(), $smarty)
         );
-       
+
     }
 
     public function provider()
     {
         return array(
-                array( 
-                    '{$var}','{{ var }}'
-                    ),
-                array(
-                    '{$contacts.fax}','{{ contacts.fax }}'
-                    ),
-                array(
-                    '{$contacts[0]}','{{ contacts[0] }}'
-                    ),
-                array(
-                    '{$contacts[2][0]}','{{ contacts[2][0] }}'
-                    ),
-                array(
-                    '{$person->name}','{{ person.name }}'
-                    )
-            );
+            array(
+                '{$var}',
+                '{{ var }}',
+            ),
+            array(
+                '{$contacts.fax}',
+                '{{ contacts.fax }}',
+            ),
+            array(
+                '{$contacts[0]}',
+                '{{ contacts[0] }}',
+            ),
+            array(
+                '{$contacts[2][0]}',
+                '{{ contacts[2][0] }}',
+            ),
+            array(
+                '{$person->name}',
+                '{{ person.name }}',
+            ),
+            array(
+                '{$person->getName()}',
+                '{{ person.getName }}',
+            )
+        );
     }
 
 }
