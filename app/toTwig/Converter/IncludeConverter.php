@@ -49,8 +49,11 @@ class IncludeConverter extends ConverterAbstract
 	        $match   = $matches[1];
 	        $attr    = $this->attributes($match);
 
-	        $replace = array();
-	        $replace['template'] = $attr['file'];
+	        $replace = array(
+	            'template' => $attr['file'],
+                'with' => null,
+                'vars' => null,
+            );
 
 	        // If we have any other variables
 	        if (count($attr) > 1) {

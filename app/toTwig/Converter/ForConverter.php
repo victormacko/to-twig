@@ -55,8 +55,8 @@ class ForConverter extends ConverterAbstract
 
 	private function replaceEndForEach($content)
 	{
-		$search = "#\{/foreach\s*\}#";
-		$replace = "{% endfor %}";
+		$search = '#\{/foreach\s*\}#';
+		$replace = '{% endfor %}';
 		return preg_replace($search,$replace,$content);
 	}
 
@@ -77,7 +77,7 @@ class ForConverter extends ConverterAbstract
 
 			$match   = $matches[1];
 			$search  = $matches[0];
-			$replace = array();
+			$replace = array('key' => '');
 
 			// {foreach $users as $user}
 			if (preg_match("/(.*)(?:as)(.*)/i", $match,$mcs)) {
@@ -94,7 +94,7 @@ class ForConverter extends ConverterAbstract
 
 				$attr = $this->attributes($match);
 
-				if ($attr['key']) {
+				if (isset($attr['key'])) {
 					$replace['key'] = $attr['key'].',';
 				}
 

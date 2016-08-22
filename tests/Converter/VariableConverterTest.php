@@ -9,14 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace sankar\ST\Tests\Converter;
+namespace Tests\Converter;
 
 use toTwig\Converter\VariableConverter;
+use toTwig\FrameworkTestCase;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
  */
-class VariableConverterTest extends \PHPUnit_Framework_TestCase
+class VariableConverterTest extends FrameworkTestCase
 {
     protected $converter;
 
@@ -26,7 +27,7 @@ class VariableConverterTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @covers \toTwig\Converter\VariableConverter::convert
-     * @dataProvider Provider
+     * @dataProvider provider
      */
     public function testThatVariableIsConverted($smarty,$twig)
     {
@@ -36,7 +37,7 @@ class VariableConverterTest extends \PHPUnit_Framework_TestCase
        
     }
 
-    public function Provider()
+    public function provider()
     {
         return array(
                 array( 
@@ -57,26 +58,4 @@ class VariableConverterTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    /**
-     * @covers \toTwig\Converter\VariableConverter::getName
-     */
-    public function testThatHaveExpectedName()
-    {
-        $this->assertEquals('variable', $this->converter->getName());
-    }
-
-    /**
-     * @covers \toTwig\Converter\VariableConverter::getDescription
-     */
-    public function testThatHaveDescription()
-    {
-        $this->assertNotEmpty($this->converter->getDescription());
-    }
-
-    private function getFileMock()
-    {
-        return $this->getMockBuilder('\SplFileInfo')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
 }

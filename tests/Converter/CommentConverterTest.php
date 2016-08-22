@@ -9,16 +9,15 @@
  * with this source code in the file LICENSE.
  */
 
-namespace sankar\ST\Tests\Converter;
+namespace Tests\Converter;
 
-use sankar\ST\Converter;
-use sankar\ST\ConverterAbstract;
-use sankar\ST\Converter\CommentConverter;
+use toTwig\Converter\CommentConverter;
+use toTwig\FrameworkTestCase;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
  */
-class CommentconverterTest extends \PHPUnit_Framework_TestCase
+class CommentConverterTest extends FrameworkTestCase
 {
     protected $converter;
 
@@ -28,7 +27,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @covers \toTwig\Converter\CommentConverter::convert
-     * @dataProvider Provider
+     * @dataProvider provider
      */
     public function testThatIfIsConverted($smarty,$twig)
     {
@@ -40,7 +39,7 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
        
     }
 
-    public function Provider()
+    public function provider()
     {
         return array(
                 array( 
@@ -50,26 +49,4 @@ class CommentconverterTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    /**
-     * @covers \toTwig\Converter\CommentConverter::getName
-     */
-    public function testThatHaveExpectedName()
-    {
-        $this->assertEquals('comment', $this->converter->getName());
-    }
-
-    /**
-     * @covers \toTwig\Converter\CommentConverter::getDescription
-     */
-    public function testThatHaveDescription()
-    {
-        $this->assertNotEmpty($this->converter->getDescription());
-    }
-
-    private function getFileMock()
-    {
-        return $this->getMockBuilder('\SplFileInfo')
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
 }

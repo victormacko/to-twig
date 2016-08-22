@@ -22,8 +22,8 @@ class MiscConverter extends ConverterAbstract
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
 	private $replacements = array(
-		'\{ldelim\}' => '',
-		'\{rdelim\}' => '',
+		'\{ldelim\}' => '{',
+		'\{rdelim\}' => '}',
 		'\{literal\}' => '{# literal #}',
 		'\{\\/literal\}' => '{# /literal #}'
 	);

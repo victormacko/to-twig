@@ -9,16 +9,19 @@
  * with this source code in the file LICENSE.
  */
 
-namespace sankar\ST\Tests\Converter;
+namespace Tests\Converter;
 
-use Symfony\Component\Finder\SplFileInfo;
 use toTwig\Converter\MiscConverter;
+use toTwig\FrameworkTestCase;
 
 /**
  * @author sankara <sankar.suda@gmail.com>
  */
-class MiscConverterTest extends \PHPUnit_Framework_TestCase
+class MiscConverterTest extends FrameworkTestCase
 {
+    /**
+     * @var MiscConverter
+     */
     protected $converter;
 
     public function setUp()
@@ -27,7 +30,7 @@ class MiscConverterTest extends \PHPUnit_Framework_TestCase
     }
     /**
      * @covers \toTwig\Converter\MiscConverter::convert
-     * @dataProvider Provider
+     * @dataProvider provider
      */
     public function testThatMiscIsConverted($smarty,$twig)
     {
@@ -37,14 +40,14 @@ class MiscConverterTest extends \PHPUnit_Framework_TestCase
        
     }
 
-    public function Provider()
+    public function provider()
     {
         return array(
                 array( 
-                    '{ldelim}',''
+                    '{ldelim}','{'
                     ),
                 array(
-                    '{rdelim}',''
+                    '{rdelim}','}'
                     ),
                 array(
                     '{literal}','{# literal #}'
@@ -55,26 +58,4 @@ class MiscConverterTest extends \PHPUnit_Framework_TestCase
             );
     }
 
-    /**
-     * @covers \toTwig\Converter\MiscConverter::getName
-     */
-    public function testThatHaveExpectedName()
-    {
-        $this->assertEquals('misc', $this->converter->getName());
-    }
-
-    /**
-     * @covers \toTwig\Converter\MiscConverter::getDescription
-     */
-    public function testThatHaveDescription()
-    {
-        $this->assertNotEmpty($this->converter->getDescription());
-    }
-
-    private function getFileMock()
-    {
-        return $this->getMockBuilder(SplFileInfo::class)
-            ->disableOriginalConstructor()
-            ->getMock();
-    }
 }

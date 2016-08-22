@@ -20,8 +20,13 @@
     "phpunit/phpunit": "^3.7.0"
   },
   "autoload": {
-    "psr-0": {
-      "toTwig\\": "app/"
+    "psr-4": {
+      "toTwig\\": "app/toTwig/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Tests\\": "tests/"
     }
   },
   "bin": [
