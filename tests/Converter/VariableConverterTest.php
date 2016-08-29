@@ -68,7 +68,11 @@ class VariableConverterTest extends FrameworkTestCase
             array(
                 '{$person->getName()}',
                 '{{ person.getName }}',
-            )
+            ),
+            array(
+                '{$person->setName($person->getName())}',
+                '{{ person.setName(person.getName) }}'
+            ),
         );
     }
 

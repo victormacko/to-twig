@@ -20,74 +20,88 @@ class AssignConverter extends ConverterAbstract
 {
 
     public function convert(\SplFileInfo $file, $content)
-	{
-		$content = $this->replace($content);
+    {
+        $content = $this->replace($content);
 
-		return $content;
-	}
-    /**
-     * @codeCoverageIgnore
-     * @inheritdoc
-     */
-	public function getPriority()
-	{
-		return 100;
-	}
+        return $content;
+    }
 
     /**
      * @codeCoverageIgnore
      * @inheritdoc
      */
-	public function getName()
-	{
-		return 'assign';
-	}
+    public function getPriority()
+    {
+        return 100;
+    }
 
     /**
      * @codeCoverageIgnore
      * @inheritdoc
      */
-	public function getDescription()
-	{
-		return "Convert smarty {assign} to twig {% set foo = 'foo' %}";
-	}
+    public function getName()
+    {
+        return 'assign';
+    }
 
-	private function replace($content)
-	{
-		$pattern = '/\{assign\b\s*([^{}]+)?\}/';
-		$string  = '{% set :key = :value %}';
+    /**
+     * @codeCoverageIgnore
+     * @inheritdoc
+     */
+    public function getDescription()
+    {
+        return "Convert smarty {assign} to twig {% set foo = 'foo' %}";
+    }
 
-		return preg_replace_callback($pattern, function($matches) use ($string) {
+    private function replace($content)
+    {
+        $string = '{% set :key = :value %}';
 
-	        $match   = $matches[1];
-	        $attr    = $this->attributes($match);
+        $shortHandPattern = '/\{\$([\w]+)\s*\=([^\}]+)\}/';
+        $content = preg_replace_callback($shortHandPattern, function($matches) use ($string){
+            return $this->vsprintf($string, array(
+                'key' => $this->variable($matches[1]),
+                'value' => $this->value($matches[2]),
+            ));
+        }, $content);
 
-	        // Short-hand {assign "name" "Bob"}
-	        if (!isset($attr['var'])) {
-	            reset($attr);
-	            $key = key($attr);
-	        } else {
-	            $key = $attr['var'];
-            }
+        $pattern = '/\{assign\b\s*([^{}]+)?\}/';
 
-	        if (!isset($attr['value'])) {
-	            next($attr);
-	            $value = key($attr);
-	        } else {
-                $value = $attr['value'];
-            }
+        return preg_replace_callback(
+            $pattern,
+            function ($matches) use ($string) {
 
-	        $value = $this->value($value);
-	        $key   = $this->variable($key);
+                $match = $matches[1];
+                $attr = $this->attributes($match);
 
-	        $string  = $this->vsprintf($string,array('key'=>$key,'value'=>$value));
-	        // Replace more than one space to single space
-	        $string = preg_replace('!\s+!', ' ', $string);	 
-	               
-	        return str_replace($matches[0], $string, $matches[0]);
+                // Short-hand {assign "name" "Bob"}
+                if (! isset($attr['var'])) {
+                    reset($attr);
+                    $key = key($attr);
+                } else {
+                    $key = $attr['var'];
+                }
 
-	      }, $content);
+                if (! isset($attr['value'])) {
+                    next($attr);
+                    $value = key($attr);
+                } else {
+                    $value = $attr['value'];
+                }
 
-	}
+                $value = $this->value($value);
+                $key = $this->variable($key);
+
+                $string = $this->vsprintf($string, array('key' => $key, 'value' => $value));
+                // Replace more than one space to single space
+                $string = preg_replace('!\s+!', ' ', $string);
+
+                return str_replace($matches[0], $string, $matches[0]);
+
+            },
+            $content
+        );
+
+    }
 
 }

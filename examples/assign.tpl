@@ -23,3 +23,5 @@
 {assign var=foo value=$bar|strlen}  // using modifier
 
 {assign var=foo value=$buh+$bar|strlen}  // more complex expression
+
+{$foo=$bar}

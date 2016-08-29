@@ -63,6 +63,11 @@ class AssignConverterTest extends FrameworkTestCase
                 '{assign var="foo" "bar" scope="global"}',
                 '{% set foo = \'bar\' %}',
             ),
+            //short
+            array(
+                '{$foo=$bar}',
+                '{% set foo = bar %}',
+            ),
         );
     }
 
