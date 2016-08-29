@@ -24,8 +24,8 @@ class MiscConverter extends ConverterAbstract
 	private $replacements = array(
 		'\{ldelim\}' => '{',
 		'\{rdelim\}' => '}',
-		'\{literal\}' => '{# literal #}',
-		'\{\\/literal\}' => '{# /literal #}'
+		'\{literal\}' => '{% verbatim %}',
+		'\{\\/literal\}' => '{% endverbatim %}'
 	);
 
 	public function convert(\SplFileInfo $file, $content)

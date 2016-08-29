@@ -50,10 +50,10 @@ class MiscConverterTest extends FrameworkTestCase
                     '{rdelim}','}'
                     ),
                 array(
-                    '{literal}','{# literal #}'
+                    '{literal}','{% verbatim %}'
                     ),
                 array(
-                    '{/literal}','{# /literal #}'
+                    '{/literal}','{% endverbatim %}'
                     )
             );
     }
