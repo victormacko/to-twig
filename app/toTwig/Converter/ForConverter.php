@@ -34,7 +34,7 @@ class ForConverter extends ConverterAbstract
 		foreach ($this->replacements as $k=>$v) {
 			$content = preg_replace('/'.$k.'/', $v, $content);
 		}
-
+//echo $content;
 		return $content;
 	}
 

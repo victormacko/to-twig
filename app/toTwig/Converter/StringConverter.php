@@ -14,9 +14,9 @@ namespace toTwig\Converter;
 use toTwig\ConverterAbstract;
 
 /**
- * @author sankara <sankar.suda@gmail.com>
+ * @author Victor Macko <victor_macko@hotmail.com>
  */
-class VariableConverter extends ConverterAbstract
+class StringConverter extends ConverterAbstract
 {
 
     public function convert(\SplFileInfo $file, $content)
@@ -38,21 +38,18 @@ class VariableConverter extends ConverterAbstract
 
     public function getDescription()
     {
-        return 'Convert smarty variable {$var.name} to twig {{ var.name }}';
+        return 'Convert smarty variable {"abcd"|trans} to twig {{ var.name }}';
     }
 
     private function replace($content)
     {
-        $pattern = '/\{\$([\w\.\-\>\[\]\(\"\)\$|:]+)?\}/';
+        $pattern = '/\{([\'"][\w\.\-\>\[\]\(\)\$|:"]+)+\}/';
 
         return preg_replace_callback(
             $pattern,
             function ($matches) {
 
                 list($search, $match) = $matches;
-
-                // Convert Object to dot
-                $match = str_replace(['->', '()', '$'], ['.', '', ''], $match);
 
                 $search = str_replace($search, '{{ '.$match.' }}', $search);
 

@@ -14,19 +14,19 @@ namespace toTwig\Converter;
 use toTwig\ConverterAbstract;
 
 /**
- * @author sankara <sankar.suda@gmail.com>
+ * @author Victor Macko <victor_macko@hotmail.com>
  */
-class MiscConverter extends ConverterAbstract
+class BlockConverter extends ConverterAbstract
 {
 
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
 	private $replacements = array(
-		'\{ldelim\}' => '{',
-		'\{rdelim\}' => '}',
-		'\{literal\}' => '{% verbatim %}',
-		'\{\\/literal\}' => '{% endverbatim %}',
-		//'\{json_encode\($([a-zA-Z09-_]+)\)\}', '{{ \1|json_encode() }'
+		'\{block name="([a-z0-9_]+)"\}' => '{% block \1 %}',	// {block name="myname"}
+		'\{block name=([a-z0-9_]+)\}' => '{% block \1 %}',		// {block name=myname}
+		'\{block ([a-z0-9_]+)\}' => '{% block \1 %}',			// {block myname}
+		'\{block "([a-z0-9_]+)"\}' => '{% block \1 %}',			// {block "myname"}
+		'\{\/block\}' => '{% endblock %}'
 	);
 
 	public function convert(\SplFileInfo $file, $content)
@@ -40,17 +40,17 @@ class MiscConverter extends ConverterAbstract
 
 	public function getPriority()
 	{
-		return 52;
+		return 100;
 	}
 
 	public function getName()
 	{
-		return 'misc';
+		return 'block';
 	}
 
 	public function getDescription()
 	{
-		return 'Convert smarty general tags like {ldelim} {rdelim} {literal}';
+		return 'Convert smarty block tags like {block name="myname"}, {block myname}, etc';
 	}
 
 }

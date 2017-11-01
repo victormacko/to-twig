@@ -14,19 +14,18 @@ namespace toTwig\Converter;
 use toTwig\ConverterAbstract;
 
 /**
- * @author sankara <sankar.suda@gmail.com>
+ * @author Victor Macko <victor_macko@hotmail.com>
  */
-class MiscConverter extends ConverterAbstract
+class ExtendsConverter extends ConverterAbstract
 {
 
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
 	private $replacements = array(
-		'\{ldelim\}' => '{',
-		'\{rdelim\}' => '}',
-		'\{literal\}' => '{% verbatim %}',
-		'\{\\/literal\}' => '{% endverbatim %}',
-		//'\{json_encode\($([a-zA-Z09-_]+)\)\}', '{{ \1|json_encode() }'
+		'\{extends file=["\']([^\"^\']+)["\']\}' => '{% extends "\1" %}',	// {extends name="myname"}
+		'\{extends file=([^\}]+)\}' => '{% extends "\1" %}',				// {extends name=myname}
+		'\{extends ["\']([^\"^\']+)["\']\}' => '{% extends "\1" %}',		// {extends "myname"}
+		'\{extends ([^}]+)\}' => '{% extends "\1" %}'						// {extends abcd}
 	);
 
 	public function convert(\SplFileInfo $file, $content)
@@ -40,17 +39,17 @@ class MiscConverter extends ConverterAbstract
 
 	public function getPriority()
 	{
-		return 52;
+		return 100;
 	}
 
 	public function getName()
 	{
-		return 'misc';
+		return 'extends';
 	}
 
 	public function getDescription()
 	{
-		return 'Convert smarty general tags like {ldelim} {rdelim} {literal}';
+		return 'Convert smarty extends tags {extends name="myname"}, {extends "abcd"}, etc';
 	}
 
 }

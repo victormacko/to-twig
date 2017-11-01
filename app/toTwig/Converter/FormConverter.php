@@ -14,19 +14,16 @@ namespace toTwig\Converter;
 use toTwig\ConverterAbstract;
 
 /**
- * @author sankara <sankar.suda@gmail.com>
+ * @author Victor Macko <victor_macko@hotmail.com>
  */
-class MiscConverter extends ConverterAbstract
+class FormConverter extends ConverterAbstract
 {
 
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
 	private $replacements = array(
-		'\{ldelim\}' => '{',
-		'\{rdelim\}' => '}',
-		'\{literal\}' => '{% verbatim %}',
-		'\{\\/literal\}' => '{% endverbatim %}',
-		//'\{json_encode\($([a-zA-Z09-_]+)\)\}', '{{ \1|json_encode() }'
+		'\{form_(row|widget|end|start|label|errors) form=\$([a-zA-Z0-9.]+)\}' => '{{ form_\1(\2) }}',	// {form_start form="..."}
+		
 	);
 
 	public function convert(\SplFileInfo $file, $content)
@@ -40,17 +37,17 @@ class MiscConverter extends ConverterAbstract
 
 	public function getPriority()
 	{
-		return 52;
+		return 100;
 	}
 
 	public function getName()
 	{
-		return 'misc';
+		return 'form';
 	}
 
 	public function getDescription()
 	{
-		return 'Convert smarty general tags like {ldelim} {rdelim} {literal}';
+		return 'Convert custom smarty form tags {form_start form=$form.age}, {form_errors form=$form.age}, etc';
 	}
 
 }

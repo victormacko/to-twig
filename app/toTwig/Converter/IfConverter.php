@@ -19,13 +19,14 @@ use toTwig\ConverterAbstract;
 class IfConverter extends ConverterAbstract
 {
     private $alt = array(
-        'gt' => '>',
-        'lt' => '<',
-        'eq' => '==',
-        'neq' => '!=',
-        'ne' => '!=',
+    	'.' => '->',
+        //'gt' => '>',
+        //'lt' => '<',
+        //'eq' => '==',
+        //'neq' => '!=',
+        //'ne' => '!=',
         'not ' => '!',
-        'mod' => '%',
+        //'mod' => '%',
         'or' => '||',
         'and' => '&&',
     );
@@ -96,7 +97,7 @@ class IfConverter extends ConverterAbstract
                 $match = $this->replaceVariable($match);
 
                 $string = sprintf($string, $match);
-
+echo 'IfConverter - found: ' . $match . "\n";
                 return str_replace($search, $string, $search);
 
             },
@@ -113,7 +114,8 @@ class IfConverter extends ConverterAbstract
             function ($matches) {
                 // Convert Object to dot
                 $matches[1] = str_replace('->', '.', $matches[1]);
-
+echo 'replaceVariable: ';
+                print_r($matches[1]);
                 return str_replace($matches[0], $matches[1], $matches[0]);
 
             },
