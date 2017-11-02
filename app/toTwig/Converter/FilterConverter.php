@@ -45,33 +45,36 @@ class FilterConverter extends ConverterAbstract
     {
 		$pattern = '/(\{[{%])\s?((if)? [$\w\.\-\>\[\]\(\)\$|:"]+[|@][\@\w|\"\:]+(\s?[!=<>]{1,2}\s?([0-9]+|true|false))?)+ ([}%]\})/';
     	$pattern = '/(\{[{%]) ([^\}]+) ([}%]\})/';
-//echo $content;
+
         $contentNew = preg_replace_callback(
             $pattern,
             function ($matches) {
                 list($search, $openTag, $match, $closeTag) = $matches;
 	
-                //echo 'FilterConverter Search: ' . $search . "\n";
-                
+                // converts smarty filter names to twig names
 				$replacements = [
 					'|@count' => '|length',
 					'|count' => '|length',
 					'|trans_choice' => '|transchoice',
 					'|date_format' => '|date'
 				];
-	
-				//echo "FilterConverter Match: " . $match;
 				
 				$match = str_replace(array_keys($replacements), array_values($replacements), $match);
 				$match = str_replace($search, $openTag . ' ' . $match.' ' . $closeTag, $match);
 	
+				// change filters with params (smarty format) to twig format
+				// eg. $myVar|escape:"js" ... or even just $myVar|escape
 				$match = preg_replace_callback('/([\w.]+)?([|@]+)([\w]+)(:(["\w:]+))?/', function($matches) {
 					list($search, $varName, $sep, $fnName) = $matches;
 					$params = isset($matches[5]) ? explode(':', $matches[5]) : [];
 		
-					if($fnName == 'escape' && ($params[0] ?? null) == '"javascript"') {
+					// if we have the 'escape' function, and it uses a JS param, then update it
+					// to the twig terminology
+					if($fnName == 'escape' && isset($params[0]) && $params[0] == '"javascript"') {
 						$params[0] = '"js"';
 					}
+					
+					// update myloop@last (smarty) to loop.last (twig)
 					if($sep == '@' && in_array($fnName, ['last'])) {
 						$sep = '.';
 						$varName = 'loop';
@@ -80,31 +83,9 @@ class FilterConverter extends ConverterAbstract
 					$replacement = $varName . $sep . $fnName . (count($params) > 0 ? '(' . join(', ', $params) . ')' : '');
 					$search = str_replace($search, $replacement, $search);
 		
-		//			echo 'found: ' . $search;
-		
 					return $search;
 				}, $match);
-				/*
-				$filters = explode('|', $match);
-				foreach($filters as $key => $filter) {
-					echo 'look into: ' . $filter;
-					
-					$filters[$key] = preg_replace_callback('/([\w]+)?([|@]+)([\w]+)(:([\w:]+))?/', function($matches) {
-						list($search, $varName, $sep, $fnName) = $matches;
-						$params = isset($matches[5]) ? $matches[5] : [];
-						
-						$replacement = $varName . $sep . $fnName . (count($params) > 0 ? '(' . join(', ', $params) . ')' : '');
-						$search = str_replace($search, $replacement, $search);
-						
-						echo 'found: ' . $search;
-						
-						return $search;
-					}, $filter);
-				}
-	
-				$match = join('|', $filters);
-				*/
-				//echo ' => ' . $match . "\n\n";
+				
                 return $openTag . ' ' . trim($match) . ' ' . $closeTag;
             },
             $content

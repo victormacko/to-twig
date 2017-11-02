@@ -14,6 +14,8 @@ namespace toTwig\Converter;
 use toTwig\ConverterAbstract;
 
 /**
+ * This was a custom 'path' function (same syntax as the symfony 'path' fn)
+ * eg. {path route="..." params=[..]}
  * @author Victor Macko <victor_macko@hotmail.com>
  */
 class PathConverter extends ConverterAbstract

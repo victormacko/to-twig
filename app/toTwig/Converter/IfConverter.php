@@ -97,7 +97,7 @@ class IfConverter extends ConverterAbstract
                 $match = $this->replaceVariable($match);
 
                 $string = sprintf($string, $match);
-//echo 'IfConverter - found: ' . $match . "\n";
+
                 return str_replace($search, $string, $search);
 
             },
@@ -107,7 +107,7 @@ class IfConverter extends ConverterAbstract
 
     private function replaceVariable($string)
     {
-        $pattern = '/(!)?\$([\w\.\-\>\[\]]+(?:\(\))?)/';
+    	$pattern = '/(!)?\$([\w\.\-\>\[\]]+(?:\(\))?)/';
 	
         return preg_replace_callback(
             $pattern,
@@ -115,6 +115,8 @@ class IfConverter extends ConverterAbstract
                 // Convert Object to dot
                 $matches[2] = str_replace('->', '.', $matches[2]);
 				
+                // take into account ! in comparisons - eg. {if !myVar} (smarty)
+				// gets changed to {if myVar == false}
 				if($matches[1] == '!') {
 					$matches[2] .= ' == false';
 				}

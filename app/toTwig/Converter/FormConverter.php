@@ -23,7 +23,6 @@ class FormConverter extends ConverterAbstract
 	// replacements not addressed in the grammar.
 	private $replacements = array(
 		'\{form_(row|widget|end|start|label|errors) form=\$([a-zA-Z0-9.]+)\}' => '{{ form_\1(\2) }}',	// {form_start form="..."}
-		
 	);
 
 	public function convert(\SplFileInfo $file, $content)
