@@ -33,12 +33,12 @@ class StringConverter extends ConverterAbstract
 
     public function getName()
     {
-        return 'variable';
+        return 'string';
     }
 
     public function getDescription()
     {
-        return 'Convert smarty variable {"abcd"|trans} to twig {{ var.name }}';
+        return 'Convert smarty variable {"abcd"|trans} to twig {{ "abcd"|trans }}';
     }
 
     private function replace($content)

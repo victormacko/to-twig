@@ -33,7 +33,7 @@ class FunctionConverter extends ConverterAbstract
 
     public function getName()
     {
-        return 'variable';
+        return 'function';
     }
 
     public function getDescription()

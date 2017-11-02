@@ -96,6 +96,10 @@ on some well-known directory structures:
 Choose from the list of available configurations:
 
 {$this->getConfigsHelp()}
+
+The <comment>--ext</comment> option lets you change the file extension the output file uses,
+eg. --ext html.twig
+
 The <comment>--dry-run</comment> option displays the files that need to be
 fixed but without actually modifying them:
 
