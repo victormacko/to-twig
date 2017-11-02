@@ -22,10 +22,10 @@ class BlockConverter extends ConverterAbstract
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
 	private $replacements = array(
-		'\{block name="([a-z0-9_]+)"\}' => '{% block \1 %}',	// {block name="myname"}
-		'\{block name=([a-z0-9_]+)\}' => '{% block \1 %}',		// {block name=myname}
-		'\{block ([a-z0-9_]+)\}' => '{% block \1 %}',			// {block myname}
-		'\{block "([a-z0-9_]+)"\}' => '{% block \1 %}',			// {block "myname"}
+		'\{block name="([a-zA-Z0-9_]+)"\}' => '{% block \1 %}',	// {block name="myname"}
+		'\{block name=([a-zA-Z0-9_]+)\}' => '{% block \1 %}',		// {block name=myname}
+		'\{block ([a-zA-Z0-9_]+)\}' => '{% block \1 %}',			// {block myname}
+		'\{block "([a-zA-Z0-9_]+)"\}' => '{% block \1 %}',			// {block "myname"}
 		'\{\/block\}' => '{% endblock %}'
 	);
 

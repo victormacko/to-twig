@@ -14,9 +14,9 @@ namespace toTwig\Converter;
 use toTwig\ConverterAbstract;
 
 /**
- * @author sankara <sankar.suda@gmail.com>
+ * @author Victor Macko <victor_macko@hotmail.com>
  */
-class VariableConverter extends ConverterAbstract
+class FunctionConverter extends ConverterAbstract
 {
 
     public function convert(\SplFileInfo $file, $content)
@@ -28,7 +28,7 @@ class VariableConverter extends ConverterAbstract
 
     public function getPriority()
     {
-        return 100;
+        return 150;
     }
 
     public function getName()
@@ -38,23 +38,27 @@ class VariableConverter extends ConverterAbstract
 
     public function getDescription()
     {
-        return 'Convert smarty variable {$var.name} to twig {{ var.name }}';
+        return 'Convert functions {json_encode($var.name)} to twig {{ var.name|json_encode }}';
     }
 
     private function replace($content)
     {
-    	$pattern = '/\{\$([\w\.\-\>\[\]\(\"\)\$|:\/]+)?(\([\w"\/\s:,]+\))?\}/';
+		$pattern = '/{(?:if\s)?(([a-zA-Z_]+)\((\$[\w\.\-\>\[\]\(\"\)\$|:\/]+)?(\([\w"\/\s:,]+\))?\))(?:.*)?\}/';
 
         return preg_replace_callback(
             $pattern,
             function ($matches) {
 
-                list($search, $match) = $matches;
+                list($search, $match, $fnName, $varName) = $matches;
 
                 // Convert Object to dot
-                $match = str_replace(['->', '()', '$'], ['.', '', ''], $match);
+                //$varName = str_replace(['->', '()', '$'], ['.', '', ''], $varName);
 
-                $search = str_replace($search, '{{ '.$match.' }}', $search);
+                $fnName = str_replace(['count'], ['length'], $fnName);
+	
+				$search = str_replace($match, $varName . '|' . $fnName, $search);
+				
+				//$search = str_replace($search, '{{ ' . $varName . '|' . $fnName . ' }}', $search);
 
                 return $search;
 

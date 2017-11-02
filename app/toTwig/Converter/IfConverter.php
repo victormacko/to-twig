@@ -25,7 +25,7 @@ class IfConverter extends ConverterAbstract
         //'eq' => '==',
         //'neq' => '!=',
         //'ne' => '!=',
-        'not ' => '!',
+        //'not ' => '!',
         //'mod' => '%',
         'or' => '||',
         'and' => '&&',
@@ -97,7 +97,7 @@ class IfConverter extends ConverterAbstract
                 $match = $this->replaceVariable($match);
 
                 $string = sprintf($string, $match);
-echo 'IfConverter - found: ' . $match . "\n";
+//echo 'IfConverter - found: ' . $match . "\n";
                 return str_replace($search, $string, $search);
 
             },
@@ -107,17 +107,19 @@ echo 'IfConverter - found: ' . $match . "\n";
 
     private function replaceVariable($string)
     {
-        $pattern = '/\$([\w\.\-\>\[\]]+)/';
-
+        $pattern = '/(!)?\$([\w\.\-\>\[\]]+(?:\(\))?)/';
+	
         return preg_replace_callback(
             $pattern,
             function ($matches) {
                 // Convert Object to dot
-                $matches[1] = str_replace('->', '.', $matches[1]);
-echo 'replaceVariable: ';
-                print_r($matches[1]);
-                return str_replace($matches[0], $matches[1], $matches[0]);
-
+                $matches[2] = str_replace('->', '.', $matches[2]);
+				
+				if($matches[1] == '!') {
+					$matches[2] .= ' == false';
+				}
+				
+                return str_replace($matches[0], $matches[2], $matches[0]);
             },
             $string
         );

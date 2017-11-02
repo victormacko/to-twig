@@ -54,16 +54,19 @@ class IncludeConverter extends ConverterAbstract
                 'with' => null,
                 'vars' => null,
             );
-
+			
+	        // shift the first element off (sometimes it's keyed with "file", sometimes
+			// not (if {include "abcd.tpl" ...} is used)
+			$replace['template'] = array_shift($attr);
+	        
 	        // If we have any other variables
-	        if (count($attr) > 1) {
+	        if (count($attr) > 0) {
 	            $replace['with'] = 'with';
-	            unset($attr['file']); // We won't need in vars
-
+	            
 	             $vars = array();
 	            foreach ($attr as $key => $value) {
 	            	$value  = $this->value($value);
-	                $vars[] = "'".$key."' : ".$value;
+	                $vars[] = "'".$key."': ".$value;
 	            }
 
 	            $replace['vars'] = '{'.implode(', ',$vars).'}';

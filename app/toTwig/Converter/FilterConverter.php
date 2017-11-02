@@ -43,13 +43,16 @@ class FilterConverter extends ConverterAbstract
 
     private function replace($content)
     {
-    	$pattern = '/(\{[{%])\s?((if)? [$\w\.\-\>\[\]\(\)\$|:"]+[|@][\@\w|\"\:]+(\s?[!=<>]{1,2}\s?([0-9]+|true|false))?)+ ([}%]\})/';
+		$pattern = '/(\{[{%])\s?((if)? [$\w\.\-\>\[\]\(\)\$|:"]+[|@][\@\w|\"\:]+(\s?[!=<>]{1,2}\s?([0-9]+|true|false))?)+ ([}%]\})/';
+    	$pattern = '/(\{[{%]) ([^\}]+) ([}%]\})/';
 //echo $content;
         $contentNew = preg_replace_callback(
             $pattern,
             function ($matches) {
-                list($search, $openTag, $match, , , , $closeTag) = $matches;
+                list($search, $openTag, $match, $closeTag) = $matches;
 	
+                //echo 'FilterConverter Search: ' . $search . "\n";
+                
 				$replacements = [
 					'|@count' => '|length',
 					'|count' => '|length',
@@ -57,7 +60,7 @@ class FilterConverter extends ConverterAbstract
 					'|date_format' => '|date'
 				];
 	
-				echo $match;
+				//echo "FilterConverter Match: " . $match;
 				
 				$match = str_replace(array_keys($replacements), array_values($replacements), $match);
 				$match = str_replace($search, $openTag . ' ' . $match.' ' . $closeTag, $match);
@@ -77,7 +80,7 @@ class FilterConverter extends ConverterAbstract
 					$replacement = $varName . $sep . $fnName . (count($params) > 0 ? '(' . join(', ', $params) . ')' : '');
 					$search = str_replace($search, $replacement, $search);
 		
-					echo 'found: ' . $search;
+		//			echo 'found: ' . $search;
 		
 					return $search;
 				}, $match);
@@ -101,7 +104,7 @@ class FilterConverter extends ConverterAbstract
 	
 				$match = join('|', $filters);
 				*/
-				echo ' => ' . $match . "\n\n";
+				//echo ' => ' . $match . "\n\n";
                 return $openTag . ' ' . trim($match) . ' ' . $closeTag;
             },
             $content
