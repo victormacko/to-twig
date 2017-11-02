@@ -97,7 +97,11 @@ class IfConverter extends ConverterAbstract
                 $match = $this->replaceVariable($match);
 
                 $string = sprintf($string, $match);
-
+                
+                // convert in_array - eg. {% if in_array(abcd, myArray) %}
+				// to {% if abcd in myArray %}
+				$string = preg_replace('/in_array\(([\w.]+),\s+([\w.]+)+\)/', '\1 in \2', $string);
+				
                 return str_replace($search, $string, $search);
 
             },
