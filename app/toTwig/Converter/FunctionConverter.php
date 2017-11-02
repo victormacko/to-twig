@@ -56,9 +56,9 @@ class FunctionConverter extends ConverterAbstract
 
                 $fnName = str_replace(['count'], ['length'], $fnName);
 	
+                // this only does the conversion from function to filter, and returns it as
+				// smarty code (for another converter to then change to twig)
 				$search = str_replace($match, $varName . '|' . $fnName, $search);
-				
-				//$search = str_replace($search, '{{ ' . $varName . '|' . $fnName . ' }}', $search);
 
                 return $search;
 
