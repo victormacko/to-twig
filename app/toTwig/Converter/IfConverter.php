@@ -100,7 +100,14 @@ class IfConverter extends ConverterAbstract
                 
                 // convert in_array - eg. {% if in_array(abcd, myArray) %}
 				// to {% if abcd in myArray %}
-				$string = preg_replace('/in_array\(([\w.]+),\s+([\w.]+)+\)/', '\1 in \2', $string);
+				$string = preg_replace_callback('/(!)?in_array\(([\w.]+),\s+([\w.]+)+\)/', function($matches) {
+					return $matches[2] . ($matches[1] == '!' ? ' not' : '') . ' in ' . $matches[3];
+				}, $string);
+				
+				// convert isset - eg. isset(abcd) or !isset(abcd)
+				$string = preg_replace_callback('/(!)?isset\(([\w.]+)\)/', function($matches) {
+					return $matches[2] . ' is' . ($matches[1] == '!' ? ' not' : '') . ' defined';
+				}, $string);
 				
                 return str_replace($search, $string, $search);
 
