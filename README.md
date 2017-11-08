@@ -5,6 +5,22 @@ toTwig is an utility to convert smarty template engine to twig template engine.
 Installation
 ------------
 
+### Download from GitHub
+
+Clone the repo from GitHub into a directory on your local machine (eg. in your home-dir ... ~/to-twig).
+From there, go into your dir where the Smarty templates reside, and execute the following;
+
+The `--ext` is the extension you'd like to give your twig files (eg. .html.twig)
+The `./` is the origin (your smarty templates)
+The `../twig-files` is the destination (where you want your twig files to go)
+
+
+	$ php ~/to-twig/toTwig convert --ext html.twig ./ ../twig-files/
+
+
+
+
+
 ### Locally
 
 Download the
