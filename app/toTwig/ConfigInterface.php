@@ -62,6 +62,10 @@ interface ConfigInterface
 	 */
 	public function getDir();
 
+	public function getOutputExtension();
+	public function getSuppliedPath();
+	public function getSuppliedDestination();
+	
 	/**
 	 * Adds an instance of a custom converter.
 	 *

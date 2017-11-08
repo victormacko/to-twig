@@ -78,7 +78,7 @@ abstract class ConverterAbstract
         //Initialize variables
         $attr       = array();
         $result     = array();
-        $pattern    = '/(?:["\']?([\w:\->]+)["\']?\s*=>?\s*)?(".*?"|\'.*?\'|(?:[$\w:\-\>()]+))/';
+        $pattern    = '/(?:["\']?([\w:\->]+)["\']?\s*=>?\s*)?(".*?"|\'.*?\'|(?:[$.\w:\-\>()\']+))/';
         // Lets grab all the key/value pairs using a regular expression
         preg_match_all( $pattern, $string, $attr );
         if (is_array($attr)) {
@@ -110,9 +110,11 @@ abstract class ConverterAbstract
 	protected function value($string)
 	{
 		$string = trim(trim($string),"'");
-		$string = ($string{0} == '$') ? ltrim(str_replace(['->', '$'], ['.', ''], $string),'$') : "'".str_replace("'", "\'", $string)."'";
-		$string = str_replace(array('"',"''"), "'", $string);
-
+		$string = (in_array($string{0}, ['$', '"', '\''])) ? ltrim(str_replace(['->', '$'], ['.', ''], $string),'$') : "'".str_replace("'", "\'", $string)."'";
+		$string = str_replace(['"', "''"], "'", $string);
+		if($string == "'") {
+			$string = "''";
+		}
 		return $string;
 	}
 

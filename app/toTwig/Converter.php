@@ -14,6 +14,7 @@ namespace toTwig;
 use SebastianBergmann\Diff\Differ;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo as FinderSplFileInfo;
+use \SplFileInfo;
 
 /**
  * @author sankar <sankar.suda@gmail.com>
@@ -83,7 +84,7 @@ class Converter
 	 * @param Boolean         $dryRun Whether to simulate the changes or not
 	 * @param Boolean         $diff   Whether to provide diff
 	 */
-	public function convert(ConfigInterface $config, $dryRun = false, $diff = false, $outputExt='')
+	public function convert(ConfigInterface $config, $dryRun = false, $diff = false)
 	{
 		$this->sortConverters();
 
@@ -93,8 +94,30 @@ class Converter
 			if ($file->isDir()) {
 				continue;
 			}
-
-			if ($fixInfo = $this->conVertFile($file, $converter, $dryRun, $diff, $outputExt)) {
+			
+			$basePath = realpath($config->getSuppliedPath()) . '/';
+			$inputFile = $file->getRealPath();
+			
+			$filePath = ($inputFile) . '';
+			
+			// get output dir
+			$outDir = realpath($config->getSuppliedDestination()) . '/';
+			
+			$inFilePathPart = substr($filePath, strlen($basePath));
+			$outFilePath = $outDir . $inFilePathPart;
+			
+			// create output dir if needed
+			$outFilePathDir = dirname($outFilePath) . '/';
+			if(!file_exists($outFilePathDir)) {
+				mkdir($outFilePathDir, 0777, true);
+			}
+			
+			$existingExt = strrchr($inputFile, '.');
+			if ($config->getOutputExtension()) {
+				$outFilePath = substr($outFilePath, 0, 0 - strlen($existingExt)) . '.' . trim($config->getOutputExtension(),'.');
+			}
+			
+			if ($fixInfo = $this->conVertFile($file, new \SplFileInfo($outFilePath), $converter, $dryRun, $diff, $config->getOutputExtension())) {
 				if ($file instanceof FinderSplFileInfo) {
 					$changed[$file->getRelativePathname()] = $fixInfo;
 				} else {
@@ -105,8 +128,15 @@ class Converter
 
 		return $changed;
 	}
-
-	public function conVertFile(\SplFileInfo $file, array $converter, $dryRun, $diff, $outputExt)
+	
+	/**
+	 * @param SplFileInfo $file
+	 * @param array $converter
+	 * @param $dryRun
+	 * @param $diff
+	 * @return array
+	 */
+	public function conVertFile(SplFileInfo $file, SplFileInfo $outputFile, array $converter, $dryRun, $diff, $outputExt)
 	{
 		$new = $old = file_get_contents($file->getRealpath());
 		$appliedConverters = array();
@@ -123,17 +153,15 @@ class Converter
 			$new = $new1;
 		}
 
-		if ($new != $old) {
+		if ($new != $old || $outputFile != $file->getRealPath()) {
 			if (!$dryRun) {
 				
-				$filename = $file->getRealpath();
-
-				$ext = strrchr($filename, '.');
-				if ($outputExt) {
-					$filename = substr($filename, 0, 0 - strlen($ext)).'.'.trim($outputExt,'.');
-				}
-
-				file_put_contents($filename, $new);
+				$outFile = $outputFile->getPathname();
+				
+				// un-comment to fix up all the references from the old extension (.tpl), to the new extension (.html.twig)
+				//$new = str_replace('.tpl', '.html.twig', $new);
+				
+				file_put_contents($outFile, $new);
 			}
 
 			$fixInfo = array('appliedConverters' => $appliedConverters);

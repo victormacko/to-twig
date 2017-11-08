@@ -21,6 +21,7 @@ use toTwig\Converter;
 use toTwig\ConverterAbstract;
 use toTwig\Config\Config;
 use toTwig\ConfigInterface;
+use InvalidArgumentException;
 
 /**
  * @author sankar <sankar.suda@gmail.com>
@@ -53,6 +54,7 @@ class ConvertCommand extends Command
 			->setName('convert')
 			->setDefinition(array(
 				new InputArgument('path', InputArgument::REQUIRED, 'The path'),
+				new InputArgument('destination', InputArgument::REQUIRED, 'The destination'),
 				new InputOption('config', '', InputOption::VALUE_REQUIRED, 'The configuration name', null),
 				new InputOption('converters', '', InputOption::VALUE_REQUIRED, 'A list of converters to run'),
 				new InputOption('ext', '', InputOption::VALUE_REQUIRED, 'To output files with other extension'),
@@ -134,7 +136,20 @@ EOF
 		$path = $input->getArgument('path');
 		$filesystem = new Filesystem();
 		if (!$filesystem->isAbsolutePath($path)) {
-			$path = getcwd().DIRECTORY_SEPARATOR.$path;
+			$path = realpath(getcwd().DIRECTORY_SEPARATOR.$path);
+			
+			if(!$path) {
+				throw new InvalidArgumentException('The path does not exist');
+			}
+		}
+		
+		$destination = $input->getArgument('destination');
+		if (!$filesystem->isAbsolutePath($destination)) {
+			$destination = realpath(getcwd().DIRECTORY_SEPARATOR.$destination);
+		}
+		
+		if(!$destination) {
+			throw new InvalidArgumentException('The destination does not exist');
 		}
 
 		$addSuppliedPathFromCli = true;
@@ -166,6 +181,10 @@ EOF
 			}
 		}
 
+		$config->setSuppliedPath($path);
+		$config->setSuppliedDestination($destination);
+		$config->setOutputExtension($input->getOption('ext'));
+		
 		// register custom converters from config
 		$this->converter->registerCustomConverters($config->getCustomConverters());
 
@@ -193,7 +212,7 @@ EOF
 
 		$config->converters($converters);
 
-		$changed = $this->converter->convert($config, $input->getOption('dry-run'), $input->getOption('diff'), $input->getOption('ext'));
+		$changed = $this->converter->convert($config, $input->getOption('dry-run'), $input->getOption('diff'));
 
 		$i = 1;
 		switch ($input->getOption('format')) {
