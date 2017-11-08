@@ -56,7 +56,6 @@ class FilterConverter extends ConverterAbstract
 					'|@count' => '|length',
 					'|count' => '|length',
 					'|trans_choice' => '|transchoice',
-					'|date_format' => '|date',
 					'|ucfirst' => '|title',
 					'|isset' => ' is defined'
 				];
@@ -66,14 +65,43 @@ class FilterConverter extends ConverterAbstract
 	
 				// change filters with params (smarty format) to twig format
 				// eg. $myVar|escape:"js" ... or even just $myVar|escape
-				$match = preg_replace_callback('/([\w.]+)?([|@]+)([\w]+)(:([\'"\w:\%\s,\/]+))?/', function($matches) {
+				$match = preg_replace_callback('/([\w.]+)?([|@]+)([\w]+)(:([\'"\w:\%\s,\/-]+))?/', function($matches) {
 					list($search, $varName, $sep, $fnName) = $matches;
-					$params = isset($matches[5]) ? explode(':', $matches[5]) : [];
+					$params = isset($matches[5]) ? explode(':', $matches[5], ($fnName == 'date_format' ? 1 : null)) : [];
 		
 					// if we have the 'escape' function, and it uses a JS param, then update it
 					// to the twig terminology
 					if($fnName == 'escape' && isset($params[0]) && $params[0] == '"javascript"') {
 						$params[0] = '"js"';
+					}
+					
+					if($fnName == 'date_format') {
+						if($varName == 'smarty.now') {
+							$varName = '"now"';
+						}
+						
+						$fnName = 'date';
+						
+						$replaceArr = [
+							'%A' => 'l',	// full weekday name
+							'%a' => 'D',	// abbreviated day-name
+							'%b' => 'M',	// abbreviated month-name
+							'%d' => 'd',	// day of month (with 0 in front)
+							'%e' => 'j',	// day of month (without preceeding 0 - eg. 5, 31, etc)
+							'%H' => 'H',	// hour (24 time)
+							'%I' => 'h',		// hour (12 hr, with 0 in front)
+							'%M' => 'i',	// minute
+							'%m' => 'm',	// month with 0 in front
+							'%S' => 's',	// seconds with 0 in front
+							'%T' => 'H:i:s',		// time
+							'%Y' => 'Y',	// year (4 digits)
+							'%y' => 'y',	// year (2 digits)
+							
+						];
+						
+						foreach($params as $k => $p) {
+							$params[$k] = str_replace(array_keys($replaceArr), array_values($replaceArr), $p);
+						}
 					}
 					
 					// update myloop@last (smarty) to loop.last (twig)
@@ -88,7 +116,7 @@ class FilterConverter extends ConverterAbstract
 					
 					$replacement = $varName . $sep . $fnName . (count($params) > 0 ? '(' . join(', ', $params) . ')' : '');
 					$search = str_replace($search, $replacement, $search);
-		
+					
 					return $search;
 				}, $match);
 				
