@@ -26,6 +26,10 @@ class BlockConverter extends ConverterAbstract
 		'\{block name=([a-zA-Z0-9_]+)\}' => '{% block \1 %}',		// {block name=myname}
 		'\{block ([a-zA-Z0-9_]+)\}' => '{% block \1 %}',			// {block myname}
 		'\{block "([a-zA-Z0-9_]+)"\}' => '{% block \1 %}',			// {block "myname"}
+		'\{block name="([a-zA-Z0-9_]+)" append\}' => '{% block \1 %}{{ parent() }}',	// {block name="myname"}
+		'\{block name=([a-zA-Z0-9_]+) append\}' => '{% block \1 %}{{ parent() }}',		// {block name=myname}
+		'\{block ([a-zA-Z0-9_]+) append\}' => '{% block \1 %}{{ parent() }}',			// {block myname}
+		'\{block "([a-zA-Z0-9_]+)" append\}' => '{% block \1 %}{{ parent() }}',			// {block "myname"}
 		'\{\/block\}' => '{% endblock %}'
 	);
 

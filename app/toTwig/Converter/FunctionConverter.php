@@ -43,13 +43,19 @@ class FunctionConverter extends ConverterAbstract
 
     private function replace($content)
     {
-		$pattern = '/{(?:if\s)?(([a-zA-Z_]+)\((\$[\w\.\-\>\[\]\(\"\)\$|:\/]+)?(\([\w"\/\s:,]+\))?\))(?:.*)?\}/';
-
+		$pattern = '/{(?:if\s)?(?:.*\s)?(([a-zA-Z_]+)\((\$[\w\.\-\>\[\]\(\"\)\$|:\/]+)?(\([\w"\/\s:,]+\))?\))(?:\s.*)?\}/';
+		$pattern = '/{(?:if\s)?(?:.*\s)?(([a-zA-Z_]+)\((\s?\$[\w\.\-\>\[\]\(\"\)\$|:\/]+)?(\([\w"\/\s:,]+\))?(?:,\s([\w\.\-\>\[\]\(\"\)\$|:\/,\s]+)?)?\))(?:\s.*)?\}/';
         return preg_replace_callback(
             $pattern,
             function ($matches) {
 
                 list($search, $match, $fnName, $varName) = $matches;
+                
+                if($fnName == 'in_array') {
+                	return $search;
+				}
+                
+                $otherVars = isset($matches[5]) ? trim($matches[5]) : '';
 
                 // Convert Object to dot
                 //$varName = str_replace(['->', '()', '$'], ['.', '', ''], $varName);
@@ -58,7 +64,7 @@ class FunctionConverter extends ConverterAbstract
 	
                 // this only does the conversion from function to filter, and returns it as
 				// smarty code (for another converter to then change to twig)
-				$search = str_replace($match, $varName . '|' . $fnName, $search);
+				$search = str_replace($match, $varName . '|' . $fnName . ($otherVars ? '(' . $otherVars . ')' : ''), $search);
 
                 return $search;
 

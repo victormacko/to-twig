@@ -56,7 +56,9 @@ class FilterConverter extends ConverterAbstract
 					'|@count' => '|length',
 					'|count' => '|length',
 					'|trans_choice' => '|transchoice',
-					'|date_format' => '|date'
+					'|date_format' => '|date',
+					'|ucfirst' => '|title',
+					'|isset' => ' is defined'
 				];
 				
 				$match = str_replace(array_keys($replacements), array_values($replacements), $match);
@@ -64,7 +66,7 @@ class FilterConverter extends ConverterAbstract
 	
 				// change filters with params (smarty format) to twig format
 				// eg. $myVar|escape:"js" ... or even just $myVar|escape
-				$match = preg_replace_callback('/([\w.]+)?([|@]+)([\w]+)(:(["\w:]+))?/', function($matches) {
+				$match = preg_replace_callback('/([\w.]+)?([|@]+)([\w]+)(:([\'"\w:\%\s,\/]+))?/', function($matches) {
 					list($search, $varName, $sep, $fnName) = $matches;
 					$params = isset($matches[5]) ? explode(':', $matches[5]) : [];
 		
@@ -75,9 +77,13 @@ class FilterConverter extends ConverterAbstract
 					}
 					
 					// update myloop@last (smarty) to loop.last (twig)
-					if($sep == '@' && in_array($fnName, ['last'])) {
+					if($sep == '@' && in_array($fnName, ['index', 'last'])) {
 						$sep = '.';
 						$varName = 'loop';
+						
+						if($fnName == 'index') {
+							$fnName = 'index0';
+						}
 					}
 					
 					$replacement = $varName . $sep . $fnName . (count($params) > 0 ? '(' . join(', ', $params) . ')' : '');

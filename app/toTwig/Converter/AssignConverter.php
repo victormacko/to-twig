@@ -32,7 +32,7 @@ class AssignConverter extends ConverterAbstract
      */
     public function getPriority()
     {
-        return 100;
+        return 105;
     }
 
     /**

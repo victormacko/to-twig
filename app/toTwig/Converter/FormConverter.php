@@ -22,16 +22,45 @@ class FormConverter extends ConverterAbstract
 	// Lookup tables for performing some token
 	// replacements not addressed in the grammar.
 	private $replacements = array(
-		'\{form_(row|widget|end|start|label|errors) form=\$([a-zA-Z0-9.]+)\}' => '{{ form_\1(\2) }}',	// {form_start form="..."}
+		'\{form_(row|widget|end|start|label|errors|rest) form=\$([a-zA-Z0-9.]+)\}' => '{{ form_\1(\2) }}',	// {form_start form="..."}
 	);
 
 	public function convert(\SplFileInfo $file, $content)
 	{
-		foreach ($this->replacements as $k=>$v) {
-			$content = preg_replace('/'.$k.'/', $v, $content);
-		}
-
-		return $content;
+		return preg_replace_callback('/\{(form_(?:row|widget|end|start|label|errors|rest))\b\s*([^{}]+)?\}/', function($matches) {
+			
+			$form_type = $matches[1];
+			$attrStr = $matches[2];
+			$attr    = $this->attributes($attrStr);
+			
+			$form = $attr['form'];
+			if(strpos($form, '$') === 0) {
+				$form = substr($form, 1);
+			}
+			
+			$replace = array(
+				'type' => $form_type,
+				'form' => $form,
+				'vars' => null,
+			);
+			unset($attr['form']);
+			
+			// If we have any other variables
+			if (count($attr) > 0) {
+				$vars = array();
+				foreach ($attr as $key => $value) {
+					$value  = $this->value($value);
+					$vars[] = "'".$key."': ".$value;
+				}
+				
+				$replace['vars'] = ', {'.implode(', ',$vars).'}';
+			}
+			
+			$template = '{{ :type(:form:vars) }}';
+			$string  = $this->vsprintf($template, $replace);
+			
+			return $string;
+		}, $content);
 	}
 
 	public function getPriority()

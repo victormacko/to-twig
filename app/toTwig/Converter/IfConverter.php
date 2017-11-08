@@ -118,13 +118,13 @@ class IfConverter extends ConverterAbstract
 
     private function replaceVariable($string)
     {
-    	$pattern = '/(!)?\$([\w\.\-\>\[\]]+(?:\(\))?)/';
+    	$pattern = '/(!)?\$([\w\.\-\>\[\]]+(?:\([\w$.]*\))?)/';
 	
         return preg_replace_callback(
             $pattern,
             function ($matches) {
                 // Convert Object to dot
-                $matches[2] = str_replace('->', '.', $matches[2]);
+				$matches[2] = str_replace(['->', '()', '$'], ['.', '', ''], $matches[2]);
 				
                 // take into account ! in comparisons - eg. {if !myVar} (smarty)
 				// gets changed to {if myVar == false}

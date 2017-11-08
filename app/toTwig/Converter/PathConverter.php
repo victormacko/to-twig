@@ -22,8 +22,8 @@ class PathConverter extends ConverterAbstract
 {
 	public function convert(\SplFileInfo $file, $content)
 	{
-		$pattern = '/\{path\b\s*route=[\'"]([\w]+)[\'"](\s+params=\[([^{}]+)\])?\}/';
-		$string = '{{ path(:route:vars) }}';
+		$pattern = '/\{path\b\s*route=[\'"]([\w]+)[\'"](\s+params=\[([^{}]+)\])?(\s+referenceType=[\'"]network[\'"])?\}/';
+		$string = '{{ :type(:route:vars) }}';
 		
 		$ret = preg_replace_callback($pattern, function($matches) use ($string) {
 			
@@ -33,9 +33,14 @@ class PathConverter extends ConverterAbstract
 			$attr = $this->attributes($params);
 			
 			$replace = [
+				'type' => 'path',
 				'route' => '"' . $route . '"',
 				'vars' => $attr,
 			];
+			
+			if(isset($matches[4]) && strpos($matches[4],'network') !== false) {
+				$replace['type'] = 'url';
+			}
 			
 			// If we have any other variables
 			if (count($attr) > 0) {
@@ -54,7 +59,7 @@ class PathConverter extends ConverterAbstract
 			
 			// Replace more than one space to single space
 			$string = preg_replace('!\s+!', ' ', $string);
-		
+			
 			return $string;
 		}, $content);
 		
